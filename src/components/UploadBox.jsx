@@ -46,7 +46,7 @@ const UploadBox = () => {
       <header className="w-full py-4 px-6 flex justify-between items-center shadow-sm bg-white">
         <div className="text-xl font-bold text-blue-600 flex items-center gap-2">
           <img src="/_logoconvertfajr" alt="Logo" className="w-6 h-6" />
-          <span>Fajr<span className="text-gray-800">Convert</span></span>
+          
         </div>
         <nav>
           <a href="#" className="text-gray-700 hover:text-blue-600 transition">Home</a>
