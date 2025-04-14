@@ -98,7 +98,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
       <header className="w-full flex items-center justify-between p-4 shadow bg-white">
-      <img src={Logo} alt="FajrConvert Logo" />
+      <img src={Logo} alt="FajrConvert Logo" style={{ height: '40px' }} />
         <nav className="space-x-6 text-sm text-gray-600 font-medium">
           <a href="#" className="hover:text-blue-600">Home</a>
         </nav>
