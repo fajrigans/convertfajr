@@ -25,10 +25,10 @@ const UploadBox = () => {
 
     setLoading(true);
     try {
-      console.log("📤 Mengirim file ke backend...");
-      const res = await axios.post("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert", formData);
-      // ← pakai path relatif
-      console.log("✅ Response:", res.data);
+      const res = await axios.post(
+        "https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert",
+        formData
+      );
 
       setDownloadUrl(res.data.downloadUrl);
     } catch (err) {
@@ -36,6 +36,34 @@ const UploadBox = () => {
       alert("Gagal mengonversi file: " + (err.response?.data?.error || err.message));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const renderPreview = () => {
+    if (!downloadUrl) return null;
+
+    if (["mp3", "wav", "ogg"].includes(format)) {
+      return <audio controls src={downloadUrl} style={{ marginTop: "1rem" }} />;
+    } else if (["mp4", "webm", "avi"].includes(format)) {
+      return <video controls src={downloadUrl} style={{ marginTop: "1rem", maxWidth: "100%" }} />;
+    } else if (["pdf", "docx", "txt"].includes(format)) {
+      return (
+        <div style={{ marginTop: "1rem" }}>
+          <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
+            📄 Buka dokumen
+          </a>
+        </div>
+      );
+    } else if (["jpg", "jpeg", "png", "webp"].includes(format)) {
+      return <img src={downloadUrl} alt="preview" style={{ marginTop: "1rem", maxWidth: "100%" }} />;
+    } else {
+      return (
+        <div style={{ marginTop: "1rem" }}>
+          <a href={downloadUrl} download>
+            🔽 Download hasil
+          </a>
+        </div>
+      );
     }
   };
 
@@ -50,19 +78,20 @@ const UploadBox = () => {
         <option value="ogg">ogg</option>
         <option value="jpg">jpg</option>
         <option value="png">png</option>
+        <option value="webp">webp</option>
+        <option value="pdf">pdf</option>
+        <option value="docx">docx</option>
+        <option value="txt">txt</option>
+        <option value="mp4">mp4</option>
+        <option value="webm">webm</option>
+        <option value="avi">avi</option>
       </select>
 
       <button onClick={handleConvert} style={{ marginLeft: "1rem" }} disabled={loading}>
         {loading ? "Mengonversi..." : "Convert"}
       </button>
 
-      {downloadUrl && (
-        <div style={{ marginTop: "1rem" }}>
-          <a href={downloadUrl} download>
-            🔽 Download hasil
-          </a>
-        </div>
-      )}
+      {renderPreview()}
     </div>
   );
 };
