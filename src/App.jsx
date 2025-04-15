@@ -48,12 +48,8 @@ function App() {
         setSelectedFormat(audioFormats[0]);
       } else if (type.startsWith('image/')) {
         setSelectedFormat(imageFormats[0]);
-      } else if (type === 'application/pdf' || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || type === 'text/plain') {
-        setSelectedFormat(documentFormats[0]);
       } else {
-        alert('File tidak didukung. Silakan pilih file video, audio, gambar, atau dokumen.');
-        setFile(null);
-        setPreviewUrl(null);
+        setSelectedFormat(documentFormats[0]);
       }
     }
   };
@@ -95,8 +91,7 @@ function App() {
     if (type.startsWith('video/')) return videoFormats;
     if (type.startsWith('audio/')) return audioFormats;
     if (type.startsWith('image/')) return imageFormats;
-    if (type === 'application/pdf' || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || type === 'text/plain') return documentFormats;
-    return [];
+    return documentFormats;
   };
 
   return (
@@ -123,7 +118,7 @@ function App() {
               <input
                 id="file-upload"
                 type="file"
-                accept="video/*,audio/*,image/*,application/pdf,.docx,text/plain"
+                accept="video/*,audio/*,image/*,.pdf,.docx,.txt"
                 className="hidden"
                 onChange={handleFileChange}
               />
@@ -147,9 +142,8 @@ function App() {
                 {file.type.startsWith('video') && <video src={previewUrl} controls className="w-full rounded-md" />}
                 {file.type.startsWith('audio') && <audio src={previewUrl} controls className="w-full" />}
                 {file.type.startsWith('image') && <img src={previewUrl} alt="Preview" className="w-full rounded-md" />}
-                {(file.type === 'application/pdf' || file.type === 'text/plain') && (
-                  <iframe src={previewUrl} className="w-full h-64 border rounded-md" title="Preview Dokumen" />
-                )}
+                {file.type === 'application/pdf' && <iframe src={previewUrl} title="PDF Preview" className="w-full h-64 border rounded-md" />}
+                {file.type === 'text/plain' && <iframe src={previewUrl} title="Text Preview" className="w-full h-64 border rounded-md" />}
               </div>
             )}
 
