@@ -14,6 +14,7 @@ function App() {
   const videoFormats = ['MP4', 'MOV', 'AVI', 'WEBM'];
   const audioFormats = ['MP3', 'WAV', 'OGG'];
   const imageFormats = ['JPG', 'PNG', 'BMP', 'WEBP'];
+  const documentFormats = ['PDF', 'DOCX', 'TXT'];
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -37,20 +38,22 @@ function App() {
         return;
       }
 
-      if (type.startsWith('video/') || type.startsWith('audio/') || type.startsWith('image/')) {
-        setFile(selected);
-        setDownloadUrl(null);
-        setPreviewUrl(URL.createObjectURL(selected));
+      setFile(selected);
+      setDownloadUrl(null);
+      setPreviewUrl(URL.createObjectURL(selected));
 
-        if (type.startsWith('video/')) {
-          setSelectedFormat(videoFormats[0]);
-        } else if (type.startsWith('audio/')) {
-          setSelectedFormat(audioFormats[0]);
-        } else if (type.startsWith('image/')) {
-          setSelectedFormat(imageFormats[0]);
-        }
+      if (type.startsWith('video/')) {
+        setSelectedFormat(videoFormats[0]);
+      } else if (type.startsWith('audio/')) {
+        setSelectedFormat(audioFormats[0]);
+      } else if (type.startsWith('image/')) {
+        setSelectedFormat(imageFormats[0]);
+      } else if (type === 'application/pdf' || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || type === 'text/plain') {
+        setSelectedFormat(documentFormats[0]);
       } else {
-        alert('File tidak didukung. Silakan pilih file video, audio, atau gambar.');
+        alert('File tidak didukung. Silakan pilih file video, audio, gambar, atau dokumen.');
+        setFile(null);
+        setPreviewUrl(null);
       }
     }
   };
@@ -67,7 +70,7 @@ function App() {
     formData.append('format', selectedFormat.toLowerCase());
 
     try {
-      const response = await axios.post("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert",formData, {
+      const response = await axios.post("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert", formData, {
         responseType: 'blob',
         onUploadProgress: (progressEvent) => {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -92,13 +95,14 @@ function App() {
     if (type.startsWith('video/')) return videoFormats;
     if (type.startsWith('audio/')) return audioFormats;
     if (type.startsWith('image/')) return imageFormats;
+    if (type === 'application/pdf' || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || type === 'text/plain') return documentFormats;
     return [];
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
       <header className="w-full flex items-center justify-between p-4 shadow bg-white">
-      <img src={Logo} alt="FajrConvert Logo" style={{ height: '40px' }} />
+        <img src={Logo} alt="FajrConvert Logo" style={{ height: '40px' }} />
         <nav className="space-x-6 text-sm text-gray-600 font-medium">
           <a href="#" className="hover:text-blue-600">Home</a>
         </nav>
@@ -119,7 +123,7 @@ function App() {
               <input
                 id="file-upload"
                 type="file"
-                accept="video/*,audio/*,image/*"
+                accept="video/*,audio/*,image/*,application/pdf,.docx,text/plain"
                 className="hidden"
                 onChange={handleFileChange}
               />
@@ -143,6 +147,9 @@ function App() {
                 {file.type.startsWith('video') && <video src={previewUrl} controls className="w-full rounded-md" />}
                 {file.type.startsWith('audio') && <audio src={previewUrl} controls className="w-full" />}
                 {file.type.startsWith('image') && <img src={previewUrl} alt="Preview" className="w-full rounded-md" />}
+                {(file.type === 'application/pdf' || file.type === 'text/plain') && (
+                  <iframe src={previewUrl} className="w-full h-64 border rounded-md" title="Preview Dokumen" />
+                )}
               </div>
             )}
 
