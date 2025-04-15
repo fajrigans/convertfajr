@@ -1,97 +1,147 @@
-import React, { useState } from "react";
+// UploadBox.jsx
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 
 const UploadBox = () => {
   const [file, setFile] = useState(null);
-  const [format, setFormat] = useState("mp3");
-  const [loading, setLoading] = useState(false);
+  const [outputFormat, setOutputFormat] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [availableFormats, setAvailableFormats] = useState([]);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-    setDownloadUrl(null);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      detectAvailableFormats(selectedFile.name);
+      setDownloadUrl(null);
+    }
   };
 
-  const handleFormatChange = (e) => {
-    setFormat(e.target.value);
+  const detectAvailableFormats = (filename) => {
+    const ext = filename.split(".").pop().toLowerCase();
+    const formats = {
+      image: ["jpg", "jpeg", "png", "webp"],
+      audio: ["mp3", "wav", "ogg"],
+      video: ["mp4", "webm", "mov"],
+      document: ["pdf", "txt", "docx"],
+      archive: ["zip", "tar", "rar", "gz"]
+    };
+
+    let type = "";
+    if (["jpg", "jpeg", "png", "webp", "gif", "tiff", "bmp"].includes(ext)) type = "image";
+    else if (["mp3", "wav", "ogg", "opus", "mpeg"].includes(ext)) type = "audio";
+    else if (["mp4", "webm", "mov", "avi", "flv", "wmv", "mpegps", "3gp"].includes(ext)) type = "video";
+    else if (["pdf", "txt", "docx", "rtf"].includes(ext)) type = "document";
+    else if (["zip", "tar", "rar", "gz"].includes(ext)) type = "archive";
+
+    setAvailableFormats(formats[type] || []);
+    setOutputFormat((formats[type] || [])[0] || "");
   };
 
-  const handleConvert = async () => {
-    if (!file) return alert("⚠️ Pilih file terlebih dahulu");
+  const handleUpload = async () => {
+    if (!file || !outputFormat) return;
+    setUploading(true);
+    setProgress(0);
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("format", format);
+    formData.append("outputFormat", outputFormat);
 
-    setLoading(true);
     try {
-      const res = await axios.post(
-        "https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert",
-        formData
-      );
-
-      setDownloadUrl(res.data.downloadUrl);
+      const response = await axios.post("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/upload", formData, {
+        onUploadProgress: (event) => {
+          const percent = Math.round((event.loaded * 100) / event.total);
+          setProgress(percent);
+        }
+      });
+      setDownloadUrl(response.data.downloadUrl);
     } catch (err) {
-      console.error("❌ Gagal mengonversi:", err.response?.data || err.message);
-      alert("Gagal mengonversi file: " + (err.response?.data?.error || err.message));
+      console.error("Upload error:", err);
+      alert("Terjadi kesalahan saat mengunggah file");
     } finally {
-      setLoading(false);
+      setUploading(false);
     }
   };
 
-  const renderPreview = () => {
-    if (!downloadUrl) return null;
-
-    if (["mp3", "wav", "ogg"].includes(format)) {
-      return <audio controls src={downloadUrl} style={{ marginTop: "1rem" }} />;
-    } else if (["mp4", "webm", "avi"].includes(format)) {
-      return <video controls src={downloadUrl} style={{ marginTop: "1rem", maxWidth: "100%" }} />;
-    } else if (["pdf", "docx", "txt"].includes(format)) {
-      return (
-        <div style={{ marginTop: "1rem" }}>
-          <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
-            📄 Buka dokumen
-          </a>
-        </div>
-      );
-    } else if (["jpg", "jpeg", "png", "webp"].includes(format)) {
-      return <img src={downloadUrl} alt="preview" style={{ marginTop: "1rem", maxWidth: "100%" }} />;
-    } else {
-      return (
-        <div style={{ marginTop: "1rem" }}>
-          <a href={downloadUrl} download>
-            🔽 Download hasil
-          </a>
-        </div>
-      );
-    }
+  const removeFile = () => {
+    setFile(null);
+    setOutputFormat("");
+    setDownloadUrl(null);
+    setProgress(0);
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>🎧 Convert Fajr</h2>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+      <div className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-6 w-full max-w-md transition-all">
+        {!file ? (
+          <label htmlFor="file" className="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-400 dark:border-gray-600 p-6 rounded-xl text-gray-600 dark:text-gray-300 hover:border-blue-500">
+            <AiOutlineCloudUpload size={48} className="mb-2" />
+            <p className="font-semibold text-center">Klik atau tarik file ke sini</p>
+            <input id="file" type="file" onChange={handleFileChange} className="hidden" />
+          </label>
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={file.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-4"
+            >
+              <div className="text-center">
+                <p className="text-lg font-medium text-gray-800 dark:text-white">
+                  {file.name} <button className="text-red-500 ml-2" onClick={removeFile}>Hapus</button>
+                </p>
+              </div>
 
-      <input type="file" onChange={handleFileChange} />
-      <select value={format} onChange={handleFormatChange} style={{ marginLeft: "1rem" }}>
-        <option value="mp3">mp3</option>
-        <option value="wav">wav</option>
-        <option value="ogg">ogg</option>
-        <option value="jpg">jpg</option>
-        <option value="png">png</option>
-        <option value="webp">webp</option>
-        <option value="pdf">pdf</option>
-        <option value="docx">docx</option>
-        <option value="txt">txt</option>
-        <option value="mp4">mp4</option>
-        <option value="webm">webm</option>
-        <option value="avi">avi</option>
-      </select>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pilih Format Output</label>
+                <select
+                  value={outputFormat}
+                  onChange={(e) => setOutputFormat(e.target.value)}
+                  className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white"
+                >
+                  {availableFormats.map((format) => (
+                    <option key={format} value={format}>{format.toUpperCase()}</option>
+                  ))}
+                </select>
+              </div>
 
-      <button onClick={handleConvert} style={{ marginLeft: "1rem" }} disabled={loading}>
-        {loading ? "Mengonversi..." : "Convert"}
-      </button>
+              <button
+                onClick={handleUpload}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+                disabled={uploading}
+              >
+                {uploading ? `Mengunggah... (${progress}%)` : "Konversi Sekarang"}
+              </button>
 
-      {renderPreview()}
+              {uploading && (
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div
+                    className="bg-green-500 h-2 rounded-full transition-all"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              )}
+
+              {downloadUrl && (
+                <a
+                  href={downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-4 text-center text-blue-600 hover:underline"
+                >
+                  Unduh File Hasil
+                </a>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </div>
     </div>
   );
 };
