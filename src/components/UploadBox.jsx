@@ -26,7 +26,8 @@ const UploadBox = () => {
     setLoading(true);
     try {
       console.log("📤 Mengirim file ke backend...");
-      const res = await axios.post("/api/convert", formData); // ← pakai path relatif
+      const res = await axios.post("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert", formData);
+      // ← pakai path relatif
       console.log("✅ Response:", res.data);
 
       setDownloadUrl(res.data.downloadUrl);
