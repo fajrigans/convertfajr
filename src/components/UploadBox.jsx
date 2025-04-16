@@ -140,14 +140,10 @@ const UploadBox = () => {
               )}
 
               {downloadUrl && (
-                <a
-                  href={downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block mt-4 text-center text-blue-600 hover:underline"
-                >
-                  Unduh File Hasil
-                </a>
+                <a href={`https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/download/${filename}`} download>
+                Download File
+              </a>
+              
               )}
             </motion.div>
           </AnimatePresence>
