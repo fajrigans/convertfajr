@@ -1,5 +1,5 @@
-// UploadBox.jsx
-import React, { useState, useEffect } from "react";
+// src/components/UploadBox.jsx
+import React, { useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineCloudUpload } from "react-icons/ai";
@@ -7,19 +7,10 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 const UploadBox = () => {
   const [file, setFile] = useState(null);
   const [outputFormat, setOutputFormat] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [downloadUrl, setDownloadUrl] = useState(null);
-  const [progress, setProgress] = useState(0);
   const [availableFormats, setAvailableFormats] = useState([]);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      detectAvailableFormats(selectedFile.name);
-      setDownloadUrl(null);
-    }
-  };
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [downloadUrl, setDownloadUrl] = useState(null);
 
   const detectAvailableFormats = (filename) => {
     const ext = filename.split(".").pop().toLowerCase();
@@ -42,11 +33,20 @@ const UploadBox = () => {
     setOutputFormat((formats[type] || [])[0] || "");
   };
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      detectAvailableFormats(selectedFile.name);
+      setDownloadUrl(null);
+    }
+  };
+
   const handleUpload = async () => {
     if (!file || !outputFormat) return;
+
     setUploading(true);
     setProgress(0);
-    setDownloadUrl(null);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -57,9 +57,7 @@ const UploadBox = () => {
         "https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/upload",
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: (event) => {
             if (event.total) {
               const percent = Math.round((event.loaded * 100) / event.total);
@@ -68,7 +66,6 @@ const UploadBox = () => {
           },
         }
       );
-
       setDownloadUrl(response.data.downloadUrl);
     } catch (err) {
       console.error("Upload error:", err);
@@ -81,6 +78,7 @@ const UploadBox = () => {
   const removeFile = () => {
     setFile(null);
     setOutputFormat("");
+    setAvailableFormats([]);
     setDownloadUrl(null);
     setProgress(0);
   };
@@ -89,10 +87,18 @@ const UploadBox = () => {
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
       <div className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-6 w-full max-w-md transition-all">
         {!file ? (
-          <label htmlFor="file" className="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-400 dark:border-gray-600 p-6 rounded-xl text-gray-600 dark:text-gray-300 hover:border-blue-500">
+          <label
+            htmlFor="file"
+            className="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-400 dark:border-gray-600 p-6 rounded-xl text-gray-600 dark:text-gray-300 hover:border-blue-500"
+          >
             <AiOutlineCloudUpload size={48} className="mb-2" />
             <p className="font-semibold text-center">Klik atau tarik file ke sini</p>
-            <input id="file" type="file" onChange={handleFileChange} className="hidden" />
+            <input
+              id="file"
+              type="file"
+              onChange={handleFileChange}
+              className="hidden"
+            />
           </label>
         ) : (
           <AnimatePresence mode="wait">
@@ -105,19 +111,29 @@ const UploadBox = () => {
             >
               <div className="text-center">
                 <p className="text-lg font-medium text-gray-800 dark:text-white">
-                  {file.name} <button className="text-red-500 ml-2" onClick={removeFile}>Hapus</button>
+                  {file.name}
+                  <button
+                    className="text-red-500 ml-2"
+                    onClick={removeFile}
+                  >
+                    Hapus
+                  </button>
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pilih Format Output</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Pilih Format Output
+                </label>
                 <select
                   value={outputFormat}
                   onChange={(e) => setOutputFormat(e.target.value)}
                   className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white"
                 >
                   {availableFormats.map((format) => (
-                    <option key={format} value={format}>{format.toUpperCase()}</option>
+                    <option key={format} value={format}>
+                      {format.toUpperCase()}
+                    </option>
                   ))}
                 </select>
               </div>
