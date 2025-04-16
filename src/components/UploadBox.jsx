@@ -47,7 +47,7 @@ const UploadBox = () => {
     formData.append("format", selectedFormat);
 
     try {
-      const response = await fetch("http://localhost:5000/api/convert", {
+      const response = await fetch("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert", {
         method: "POST",
         body: formData,
       });
@@ -56,7 +56,7 @@ const UploadBox = () => {
       const data = await response.json();
       if (data.downloadUrl) {
         setProgress(100);
-        setDownloadUrl(`http://localhost:5000${data.downloadUrl}`);
+        setDownloadUrl(`https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev${data.downloadUrl}`);
       } else {
         alert("Gagal konversi file.");
         setProgress(0);
