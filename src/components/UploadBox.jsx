@@ -46,18 +46,29 @@ const UploadBox = () => {
     if (!file || !outputFormat) return;
     setUploading(true);
     setProgress(0);
-
+    setDownloadUrl(null);
+  
     const formData = new FormData();
     formData.append("file", file);
     formData.append("outputFormat", outputFormat);
-
+  
     try {
-      const response = await axios.post("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/upload", formData, {
-        onUploadProgress: (event) => {
-          const percent = Math.round((event.loaded * 100) / event.total);
-          setProgress(percent);
+      const response = await axios.post(
+        "https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (event) => {
+            if (event.total) {
+              const percent = Math.round((event.loaded * 100) / event.total);
+              setProgress(percent);
+            }
+          },
         }
-      });
+      );
+  
       setDownloadUrl(response.data.downloadUrl);
     } catch (err) {
       console.error("Upload error:", err);
@@ -66,7 +77,7 @@ const UploadBox = () => {
       setUploading(false);
     }
   };
-
+  
   const removeFile = () => {
     setFile(null);
     setOutputFormat("");
