@@ -47,11 +47,11 @@ const UploadBox = () => {
     setUploading(true);
     setProgress(0);
     setDownloadUrl(null);
-  
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("outputFormat", outputFormat);
-  
+
     try {
       const response = await axios.post(
         "https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/upload",
@@ -68,7 +68,7 @@ const UploadBox = () => {
           },
         }
       );
-  
+
       setDownloadUrl(response.data.downloadUrl);
     } catch (err) {
       console.error("Upload error:", err);
@@ -77,7 +77,7 @@ const UploadBox = () => {
       setUploading(false);
     }
   };
-  
+
   const removeFile = () => {
     setFile(null);
     setOutputFormat("");
@@ -140,10 +140,15 @@ const UploadBox = () => {
               )}
 
               {downloadUrl && (
-                <a href={`https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/download/${filename}`} download>
-                Download File
-              </a>
-              
+                <a
+                  href={downloadUrl}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-2 text-blue-600 dark:text-blue-400 hover:underline text-center"
+                >
+                  Download File
+                </a>
               )}
             </motion.div>
           </AnimatePresence>
