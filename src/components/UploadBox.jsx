@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 const UploadBox = () => {
   const [file, setFile] = useState(null);
@@ -9,16 +9,7 @@ const UploadBox = () => {
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const handleFileSelect = (e) => {
-    const uploadedFile = e.target.files[0];
-    processFile(uploadedFile);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const droppedFile = e.dataTransfer.files[0];
-    processFile(droppedFile);
-  };
+  const fileInputRef = useRef();
 
   const processFile = (uploadedFile) => {
     if (!uploadedFile) return;
@@ -59,7 +50,7 @@ const UploadBox = () => {
     setProgress(10);
 
     try {
-      const response = await fetch('https://your-backend-url/api/convert', {
+      const response = await fetch('https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert', {
         method: 'POST',
         body: formData,
       });
@@ -76,7 +67,18 @@ const UploadBox = () => {
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files[0];
+    processFile(droppedFile);
+  };
+
   const handleDragOver = (e) => e.preventDefault();
+
+  const handleFileSelect = (e) => {
+    const selected = e.target.files[0];
+    processFile(selected);
+  };
 
   return (
     <div style={styles.container}>
@@ -84,25 +86,23 @@ const UploadBox = () => {
 
       <div
         style={styles.dropZone}
+        onClick={() => fileInputRef.current.click()}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
         {file ? (
           <span style={styles.fileName}>📁 {file.name}</span>
         ) : (
-          <span>Drop file here or click below</span>
+          <span>Click or drop file here</span>
         )}
       </div>
 
       <input
         type="file"
-        id="fileInput"
+        ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileSelect}
       />
-      <button style={styles.button} onClick={() => document.getElementById('fileInput').click()}>
-        Pilih File
-      </button>
 
       {outputFormats.length > 0 && (
         <div style={styles.formatContainer}>
@@ -180,16 +180,6 @@ const styles = {
   fileName: {
     color: '#555',
     fontWeight: 'bold',
-  },
-  button: {
-    marginTop: '10px',
-    padding: '10px 20px',
-    fontSize: '16px',
-    backgroundColor: '#007bff',
-    border: 'none',
-    color: 'white',
-    borderRadius: '5px',
-    cursor: 'pointer',
   },
   formatContainer: {
     display: 'flex',
