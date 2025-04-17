@@ -57,7 +57,7 @@ const UploadBox = () => {
     setUploading(true);
     setProgress(0);
     try {
-      const response = await axios.post("https://convertfajr-backend.yourdomain.com/api/convert", formData, {
+      const response = await axios.post("https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert", formData, {
         responseType: "blob",
         onUploadProgress: (e) => {
           const percent = Math.round((e.loaded * 100) / e.total);
