@@ -1,240 +1,266 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
 
 const UploadBox = () => {
-  const [file, setFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileType, setFileType] = useState("");
   const [outputFormats, setOutputFormats] = useState([]);
-  const [selectedFormat, setSelectedFormat] = useState('');
-  const [previewUrl, setPreviewUrl] = useState('');
-  const [convertedUrl, setConvertedUrl] = useState('');
+  const [outputFormat, setOutputFormat] = useState("");
+  const [convertedUrl, setConvertedUrl] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  const fileInputRef = useRef();
-
-  const processFile = (uploadedFile) => {
-    if (!uploadedFile) return;
-    setFile(uploadedFile);
-    setConvertedUrl('');
-    setPreviewUrl(URL.createObjectURL(uploadedFile));
-    detectFileType(uploadedFile);
-  };
 
   const detectFileType = (file) => {
     const type = file.type;
-    let formats = [];
-
-    if (type.startsWith('image/')) {
-      formats = ['jpg', 'png', 'webp'];
-    } else if (type.startsWith('audio/')) {
-      formats = ['mp3', 'wav', 'ogg'];
-    } else if (type.startsWith('video/')) {
-      formats = ['mp4', 'webm'];
-    } else if (type === 'application/pdf' || type.includes('text') || type.includes('word')) {
-      formats = ['pdf', 'docx', 'txt'];
-    } else if (type.includes('zip') || type.includes('rar')) {
-      formats = ['zip', 'tar'];
+    if (type.startsWith("image/")) {
+      setFileType("image");
+      setOutputFormats(["jpg", "jpeg", "png", "webp"]);
+    } else if (type.startsWith("audio/")) {
+      setFileType("audio");
+      setOutputFormats(["mp3", "wav", "ogg"]);
+    } else if (type.startsWith("video/")) {
+      setFileType("video");
+      setOutputFormats(["mp4", "webm", "mov"]);
+    } else if (
+      type === "application/pdf" ||
+      type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+      type === "text/plain"
+    ) {
+      setFileType("document");
+      setOutputFormats(["pdf", "docx", "txt"]);
+    } else if (
+      type === "application/zip" ||
+      type === "application/x-rar-compressed" ||
+      type === "application/gzip"
+    ) {
+      setFileType("archive");
+      setOutputFormats(["zip", "tar", "gz"]);
+    } else {
+      setFileType("unknown");
+      setOutputFormats([]);
     }
-
-    setOutputFormats(formats);
-    setSelectedFormat(formats[0]);
   };
 
-  const handleConvert = async () => {
-    if (!file || !selectedFormat) return;
+  const handleFileChange = (file) => {
+    setSelectedFile(file);
+    setConvertedUrl("");
+    detectFileType(file);
+  };
 
+  const handleUpload = async () => {
+    if (!selectedFile || !outputFormat) return;
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('outputFormat', selectedFormat);
+    formData.append("file", selectedFile);
+    formData.append("outputFormat", outputFormat);
 
-    setLoading(true);
-    setProgress(10);
-
+    setUploading(true);
+    setProgress(0);
     try {
-      const response = await fetch('https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert', {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post("https://convertfajr-backend.yourdomain.com/api/convert", formData, {
+        responseType: "blob",
+        onUploadProgress: (e) => {
+          const percent = Math.round((e.loaded * 100) / e.total);
+          setProgress(percent);
+        },
       });
 
-      setProgress(80);
-
-      const data = await response.json();
-      setConvertedUrl(data.downloadUrl);
-      setProgress(100);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      setConvertedUrl(url);
     } catch (error) {
-      console.error('Conversion error:', error);
+      console.error("Conversion error:", error);
     } finally {
-      setLoading(false);
+      setUploading(false);
     }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const droppedFile = e.dataTransfer.files[0];
-    processFile(droppedFile);
-  };
-
-  const handleDragOver = (e) => e.preventDefault();
-
-  const handleFileSelect = (e) => {
-    const selected = e.target.files[0];
-    processFile(selected);
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    handleFileChange(file);
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>📤 File Converter Online</h2>
+    <div className="upload-container">
+      <h2>📦 File Converter Online</h2>
 
       <div
-        style={styles.dropZone}
-        onClick={() => fileInputRef.current.click()}
+        className={`drop-area ${isDragging ? "dragging" : ""}`}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
-        onDragOver={handleDragOver}
+        onClick={() => document.getElementById("fileInput").click()}
       >
-        {file ? (
-          <span style={styles.fileName}>📁 {file.name}</span>
-        ) : (
-          <span>Click or drop file here</span>
-        )}
+        📁 Drag & drop file here or click to browse
       </div>
 
       <input
         type="file"
-        ref={fileInputRef}
-        style={{ display: 'none' }}
-        onChange={handleFileSelect}
+        id="fileInput"
+        style={{ display: "none" }}
+        onChange={(e) => handleFileChange(e.target.files[0])}
       />
 
-      {outputFormats.length > 0 && (
-        <div style={styles.formatContainer}>
-          {outputFormats.map((format) => (
-            <button
-              key={format}
-              style={{
-                ...styles.formatButton,
-                backgroundColor: selectedFormat === format ? '#007bff' : '#eee',
-                color: selectedFormat === format ? '#fff' : '#333',
-              }}
-              onClick={() => setSelectedFormat(format)}
+      {selectedFile && (
+        <div className="preview-section">
+          <p><strong>File:</strong> {selectedFile.name}</p>
+
+          {fileType === "image" && (
+            <img
+              src={URL.createObjectURL(selectedFile)}
+              alt="preview"
+              className="preview-image"
+            />
+          )}
+
+          {outputFormats.length > 0 && (
+            <select
+              value={outputFormat}
+              onChange={(e) => setOutputFormat(e.target.value)}
             >
-              {format.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      )}
+              <option value="">Pilih format output</option>
+              {outputFormats.map((format) => (
+                <option key={format} value={format}>
+                  {format}
+                </option>
+              ))}
+            </select>
+          )}
 
-      {file && (
-        <button style={styles.convertButton} onClick={handleConvert} disabled={loading}>
-          {loading ? 'Mengonversi...' : 'Konversi File'}
-        </button>
-      )}
+          <button onClick={handleUpload} disabled={uploading || !outputFormat}>
+            {uploading ? "Converting..." : "Convert"}
+          </button>
 
-      {loading && (
-        <div style={styles.progressBar}>
-          <div style={{ ...styles.progressFill, width: `${progress}%` }}></div>
+          {uploading && <div className="progress-bar"><div style={{ width: `${progress}%` }} /></div>}
         </div>
       )}
 
       {convertedUrl && (
-        <div style={styles.previewSection}>
-          <h4>Hasil:</h4>
-          {selectedFormat.match(/(jpg|png|webp)/) && (
-            <img src={convertedUrl} alt="Preview" style={styles.previewImg} />
-          )}
-          {selectedFormat.match(/(mp3|wav|ogg)/) && (
-            <audio controls src={convertedUrl}></audio>
-          )}
-          {selectedFormat.match(/(mp4|webm)/) && (
-            <video controls width="300" src={convertedUrl}></video>
-          )}
-          <a href={convertedUrl} download style={styles.downloadLink}>⬇️ Download File</a>
+        <div className="download-section">
+          <a href={convertedUrl} download>
+            ⬇️ Download File
+          </a>
         </div>
       )}
+
+      <style>{`
+        .upload-container {
+          max-width: 480px;
+          margin: 60px auto;
+          padding: 24px;
+          border-radius: 16px;
+          background-color: var(--bg);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          font-family: 'Segoe UI', sans-serif;
+          color: var(--text);
+        }
+
+        .drop-area {
+          border: 2px dashed #999;
+          padding: 40px;
+          text-align: center;
+          border-radius: 12px;
+          margin-bottom: 16px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .drop-area.dragging {
+          background-color: #f0f0f0;
+        }
+
+        .preview-section {
+          margin-top: 20px;
+        }
+
+        .preview-image {
+          width: 100%;
+          max-height: 240px;
+          object-fit: contain;
+          margin-top: 12px;
+          border-radius: 8px;
+        }
+
+        select {
+          padding: 8px;
+          border-radius: 8px;
+          margin: 12px 0;
+          width: 100%;
+        }
+
+        button {
+          padding: 10px 20px;
+          background-color: #0084ff;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          width: 100%;
+        }
+
+        .progress-bar {
+          margin-top: 10px;
+          width: 100%;
+          height: 10px;
+          background-color: #eee;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+
+        .progress-bar > div {
+          height: 100%;
+          background-color: #00c853;
+          width: 0%;
+          transition: width 0.3s;
+        }
+
+        .download-section {
+          margin-top: 20px;
+          text-align: center;
+        }
+
+        a {
+          background: #00c853;
+          color: white;
+          padding: 10px 16px;
+          border-radius: 8px;
+          text-decoration: none;
+        }
+
+        :root {
+          --bg: #f9fafb;
+          --text: #111;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          :root {
+            --bg: #1e1e1e;
+            --text: #eee;
+          }
+
+          .drop-area {
+            border-color: #555;
+          }
+
+          button {
+            background-color: #007acc;
+          }
+
+          .progress-bar {
+            background-color: #444;
+          }
+
+          .progress-bar > div {
+            background-color: #80e27e;
+          }
+        }
+      `}</style>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    maxWidth: '500px',
-    margin: '50px auto',
-    padding: '30px',
-    borderRadius: '15px',
-    backgroundColor: '#f7f7f7',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-    fontFamily: 'sans-serif',
-    textAlign: 'center',
-  },
-  title: {
-    marginBottom: '20px',
-    color: '#333',
-  },
-  dropZone: {
-    border: '2px dashed #aaa',
-    borderRadius: '10px',
-    padding: '30px',
-    marginBottom: '15px',
-    background: '#fff',
-    color: '#777',
-    cursor: 'pointer',
-  },
-  fileName: {
-    color: '#555',
-    fontWeight: 'bold',
-  },
-  formatContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    gap: '10px',
-    marginTop: '15px',
-  },
-  formatButton: {
-    padding: '6px 12px',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  convertButton: {
-    marginTop: '20px',
-    padding: '10px 25px',
-    backgroundColor: '#28a745',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-  },
-  progressBar: {
-    marginTop: '20px',
-    height: '8px',
-    width: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#28a745',
-    transition: 'width 0.3s ease-in-out',
-  },
-  previewSection: {
-    marginTop: '25px',
-  },
-  previewImg: {
-    maxWidth: '100%',
-    maxHeight: '250px',
-    margin: '10px 0',
-    borderRadius: '10px',
-  },
-  downloadLink: {
-    display: 'inline-block',
-    marginTop: '10px',
-    textDecoration: 'none',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    padding: '8px 15px',
-    borderRadius: '5px',
-  },
 };
 
 export default UploadBox;
