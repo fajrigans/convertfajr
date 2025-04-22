@@ -43,23 +43,26 @@ const UploadBox = () => {
 
   const handleConvert = async () => {
     if (!file || !outputFormat) return;
-
+  
     const formData = new FormData();
     formData.append("file", file);
     formData.append("outputFormat", outputFormat);
-
+  
     setIsConverting(true);
     setProgress(30);
-
+  
     try {
       const response = await fetch("https://convertfajr-backend-production-4294.up.railway.app/api/convert", {
         method: "POST",
         body: formData,
       });
-
+  
       const data = await response.json();
-      if (data.download_url) {
-        setConvertedFileUrl(data.download_url);
+  
+      if (data.url) {
+        // Karena backend hanya kasih URL relatif, kita gabungkan dengan domain
+        const fullUrl = `https://convertfajr-backend-production-4294.up.railway.app${data.url}`;
+        setConvertedFileUrl(fullUrl);
         setProgress(100);
       } else {
         alert("Konversi gagal.");
@@ -70,9 +73,10 @@ const UploadBox = () => {
       alert("Terjadi kesalahan saat konversi.");
       setProgress(0);
     }
-
+  
     setIsConverting(false);
   };
+  
 
   return (
     <div style={styles.uploadBox}>
