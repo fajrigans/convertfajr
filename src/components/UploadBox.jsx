@@ -1,192 +1,209 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 
 const UploadBox = () => {
   const [file, setFile] = useState(null);
   const [outputFormat, setOutputFormat] = useState("");
-  const [downloadLink, setDownloadLink] = useState("");
+  const [convertedFileUrl, setConvertedFileUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
   const [progress, setProgress] = useState(0);
-  const [preview, setPreview] = useState(null);
-  const [availableFormats, setAvailableFormats] = useState([]);
-  const dropRef = useRef();
+  const [isConverting, setIsConverting] = useState(false);
 
-  const detectFileType = (file) => {
-    const type = file.type;
+  const fileTypeMap = {
+    image: ["jpg", "png", "webp"],
+    audio: ["mp3", "wav", "ogg"],
+    video: ["mp4", "webm"],
+    document: ["pdf", "docx", "txt"],
+    archive: ["zip", "tar", "rar"],
+  };
+
+  const detectFileCategory = (type) => {
     if (type.startsWith("image/")) return "image";
     if (type.startsWith("audio/")) return "audio";
     if (type.startsWith("video/")) return "video";
-    if (type === "application/pdf" || type.includes("word") || type.includes("text")) return "document";
-    if (type === "application/zip" || type === "application/x-rar-compressed") return "archive";
-    return "other";
+    if (type.includes("pdf") || type.includes("word") || type.includes("text"))
+      return "document";
+    if (type.includes("zip") || type.includes("rar") || type.includes("tar"))
+      return "archive";
+    return null;
   };
 
-  const getFormatsForType = (type) => {
-    switch (type) {
-      case "image": return ["jpg", "png", "webp"];
-      case "audio": return ["mp3", "wav", "ogg"];
-      case "video": return ["mp4", "webm"];
-      case "document": return ["pdf", "txt", "docx"];
-      case "archive": return ["zip"];
-      default: return [];
-    }
-  };
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
 
-  const handleFileInput = (selectedFile) => {
     setFile(selectedFile);
-    setDownloadLink("");
-    setOutputFormat("");
-    setProgress(0);
+    setConvertedFileUrl("");
+    const url = URL.createObjectURL(selectedFile);
+    setPreviewUrl(url);
 
-    const fileType = detectFileType(selectedFile);
-    const formats = getFormatsForType(fileType);
-    setAvailableFormats(formats);
-
-    if (selectedFile.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
-      reader.readAsDataURL(selectedFile);
-    } else if (selectedFile.type.startsWith("audio/") || selectedFile.type.startsWith("video/")) {
-      setPreview(URL.createObjectURL(selectedFile));
-    } else {
-      setPreview(null);
-    }
+    const category = detectFileCategory(selectedFile.type);
+    const defaultFormat = fileTypeMap[category]?.[0] || "";
+    setOutputFormat(defaultFormat);
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dropRef.current.style.border = "2px dashed #aaa";
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile) handleFileInput(droppedFile);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dropRef.current.style.border = "2px solid #00c6ff";
-  };
-
-  const handleDragLeave = () => {
-    dropRef.current.style.border = "2px dashed #aaa";
-  };
-
-  const handleUpload = async () => {
+  const handleConvert = async () => {
     if (!file || !outputFormat) return;
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("outputFormat", outputFormat);
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/api/convert", true);
-    xhr.upload.onprogress = (e) => {
-      if (e.lengthComputable) {
-        setProgress(Math.round((e.loaded / e.total) * 100));
-      }
-    };
-    xhr.onload = () => {
-      const res = JSON.parse(xhr.responseText);
-      if (xhr.status === 200) {
-        setDownloadLink(`https://74b78a0e-9569-484c-92f7-830f2b59ae41-00-3ckgf1rvks737.pike.replit.dev/download/${res.filename}`);
+    setIsConverting(true);
+    setProgress(30);
+
+    try {
+      const response = await fetch("https://convertfajr-backend-production-4294.up.railway.app/api/convert", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.download_url) {
+        setConvertedFileUrl(data.download_url);
+        setProgress(100);
       } else {
-        alert("Conversion failed");
+        alert("Konversi gagal.");
+        setProgress(0);
       }
-    };
-    xhr.send(formData);
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Terjadi kesalahan saat konversi.");
+      setProgress(0);
+    }
+
+    setIsConverting(false);
   };
 
   return (
-    <div style={styles.container}>
-      <h2>🎛️ File Converter</h2>
+    <div style={styles.uploadBox}>
+      <h2>Konversi File Otomatis</h2>
 
       <div
-        ref={dropRef}
-        style={styles.dropzone}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
+        style={styles.dropZone}
+        onClick={() => document.getElementById("fileInput").click()}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          handleFileChange({ target: { files: e.dataTransfer.files } });
+        }}
       >
-        <p>📂 Drag & drop file here</p>
-        <p>or</p>
-        <input type="file" onChange={(e) => handleFileInput(e.target.files[0])} />
+        {file ? <p>{file.name}</p> : <p>Drag & drop file di sini atau klik</p>}
+        <input
+          id="fileInput"
+          type="file"
+          hidden
+          onChange={handleFileChange}
+        />
       </div>
 
-      {availableFormats.length > 0 && (
-        <select value={outputFormat} onChange={(e) => setOutputFormat(e.target.value)} style={styles.select}>
-          <option value="">Pilih format output</option>
-          {availableFormats.map((format) => (
-            <option key={format} value={format}>{format.toUpperCase()}</option>
-          ))}
-        </select>
-      )}
-
-      {file && outputFormat && (
-        <button onClick={handleUpload} style={styles.button}>Convert</button>
-      )}
-
-      {progress > 0 && progress < 100 && <p>Uploading: {progress}%</p>}
-
-      {preview && (
-        <div style={styles.previewBox}>
-          {file.type.startsWith("image/") && <img src={preview} alt="Preview" style={{ maxWidth: "100%" }} />}
-          {file.type.startsWith("audio/") && <audio controls src={preview} />}
-          {file.type.startsWith("video/") && <video controls src={preview} style={{ maxWidth: "100%" }} />}
+      {file && (
+        <div style={styles.options}>
+          <label>Format Output:</label>
+          <select
+            value={outputFormat}
+            onChange={(e) => setOutputFormat(e.target.value)}
+            style={styles.select}
+          >
+            {fileTypeMap[detectFileCategory(file.type)]?.map((format) => (
+              <option key={format} value={format}>
+                {format}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
-      {downloadLink && (
-        <a href={downloadLink} download style={styles.downloadLink}>⬇ Download File</a>
+      {file && (
+        <button
+          onClick={handleConvert}
+          disabled={isConverting}
+          style={styles.button}
+        >
+          {isConverting ? "Mengonversi..." : "Konversi"}
+        </button>
+      )}
+
+      {progress > 0 && progress < 100 && (
+        <div style={styles.progressBar}>
+          <div style={{ ...styles.progressInner, width: `${progress}%` }}></div>
+        </div>
+      )}
+
+      {convertedFileUrl && (
+        <div style={styles.previewSection}>
+          <h4>Preview Hasil:</h4>
+          {outputFormat.match(/(jpg|png|webp)/) && (
+            <img src={convertedFileUrl} alt="Hasil" width="200" />
+          )}
+          {outputFormat.match(/(mp3|wav|ogg)/) && (
+            <audio controls src={convertedFileUrl}></audio>
+          )}
+          {outputFormat.match(/(mp4|webm)/) && (
+            <video controls src={convertedFileUrl} width="300"></video>
+          )}
+          <div>
+            <a href={convertedFileUrl} download>
+              <button style={styles.button}>Download File</button>
+            </a>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 const styles = {
-  container: {
-    maxWidth: 500,
+  uploadBox: {
+    background: "#2e2e2e",
+    color: "white",
+    padding: "2rem",
+    borderRadius: "16px",
+    maxWidth: "500px",
     margin: "auto",
-    padding: 20,
-    background: "#1e1e1e",
-    color: "#fff",
-    borderRadius: 10,
-    textAlign: "center",
-    boxShadow: "0 0 20px rgba(0,0,0,0.3)",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
     fontFamily: "sans-serif",
+    textAlign: "center",
   },
-  dropzone: {
+  dropZone: {
     border: "2px dashed #aaa",
-    borderRadius: 8,
-    padding: 30,
-    marginBottom: 10,
-    backgroundColor: "#2c2c2c",
+    padding: "2rem",
     cursor: "pointer",
+    marginBottom: "1rem",
+    borderRadius: "12px",
+  },
+  options: {
+    marginBottom: "1rem",
   },
   select: {
-    marginTop: 10,
-    padding: 8,
-    fontSize: 16,
-    borderRadius: 5,
-    border: "1px solid #ccc",
+    marginLeft: "10px",
+    padding: "0.4rem",
+    borderRadius: "6px",
+    border: "1px solid #999",
   },
   button: {
-    marginTop: 10,
-    padding: "10px 20px",
-    fontSize: 16,
-    background: "#00c6ff",
-    color: "#fff",
+    background: "#5c5cff",
     border: "none",
-    borderRadius: 5,
+    padding: "0.5rem 1.5rem",
+    color: "white",
+    borderRadius: "8px",
     cursor: "pointer",
+    marginTop: "1rem",
   },
-  previewBox: {
-    marginTop: 20,
+  progressBar: {
+    background: "#444",
+    height: "10px",
+    borderRadius: "5px",
+    overflow: "hidden",
+    marginTop: "10px",
   },
-  downloadLink: {
-    marginTop: 20,
-    display: "inline-block",
-    padding: "10px 15px",
-    background: "#4caf50",
-    color: "#fff",
-    textDecoration: "none",
-    borderRadius: 5,
+  progressInner: {
+    background: "#5c5cff",
+    height: "100%",
+    transition: "width 0.3s",
+  },
+  previewSection: {
+    marginTop: "1rem",
+    textAlign: "center",
   },
 };
 
