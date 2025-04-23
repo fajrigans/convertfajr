@@ -31,36 +31,50 @@ const UploadBox = () => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
+    console.log("File type:", selectedFile.type); // debug
+
     setFile(selectedFile);
     setConvertedFileUrl("");
     const url = URL.createObjectURL(selectedFile);
     setPreviewUrl(url);
 
     const category = detectFileCategory(selectedFile.type);
+    if (!category) {
+      alert("Jenis file tidak dikenali. Silakan coba file lain.");
+      setOutputFormat("");
+      return;
+    }
+
     const defaultFormat = fileTypeMap[category]?.[0] || "";
     setOutputFormat(defaultFormat);
   };
 
   const handleConvert = async () => {
-    if (!file || !outputFormat) return;
-  
+    if (!file) {
+      alert("Silakan pilih file terlebih dahulu.");
+      return;
+    }
+    if (!outputFormat) {
+      alert("Silakan pilih format output.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("outputFormat", outputFormat);
-  
+
     setIsConverting(true);
     setProgress(30);
-  
+
     try {
       const response = await fetch("https://convertfajr-backend-production-4294.up.railway.app/api/convert", {
         method: "POST",
         body: formData,
       });
-  
+
       const data = await response.json();
-  
+
       if (data.url) {
-        // Karena backend hanya kasih URL relatif, kita gabungkan dengan domain
         const fullUrl = `https://convertfajr-backend-production-4294.up.railway.app${data.url}`;
         setConvertedFileUrl(fullUrl);
         setProgress(100);
@@ -73,10 +87,9 @@ const UploadBox = () => {
       alert("Terjadi kesalahan saat konversi.");
       setProgress(0);
     }
-  
+
     setIsConverting(false);
   };
-  
 
   return (
     <div style={styles.uploadBox}>
