@@ -31,33 +31,18 @@ const UploadBox = () => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
-    console.log("File type:", selectedFile.type); // debug
-
     setFile(selectedFile);
     setConvertedFileUrl("");
     const url = URL.createObjectURL(selectedFile);
     setPreviewUrl(url);
 
     const category = detectFileCategory(selectedFile.type);
-    if (!category) {
-      alert("Jenis file tidak dikenali. Silakan coba file lain.");
-      setOutputFormat("");
-      return;
-    }
-
     const defaultFormat = fileTypeMap[category]?.[0] || "";
     setOutputFormat(defaultFormat);
   };
 
   const handleConvert = async () => {
-    if (!file) {
-      alert("Silakan pilih file terlebih dahulu.");
-      return;
-    }
-    if (!outputFormat) {
-      alert("Silakan pilih format output.");
-      return;
-    }
+    if (!file || !outputFormat) return;
 
     const formData = new FormData();
     formData.append("file", file);
@@ -76,8 +61,23 @@ const UploadBox = () => {
 
       if (data.url) {
         const fullUrl = `https://convertfajr-backend-production-4294.up.railway.app${data.url}`;
-        setConvertedFileUrl(fullUrl);
+
+        // Ambil file dari server dan convert ke blob
+        const fileResponse = await fetch(fullUrl);
+        const blob = await fileResponse.blob();
+
+        // Buat URL lokal untuk preview
+        const localUrl = URL.createObjectURL(blob);
+        setConvertedFileUrl(localUrl);
         setProgress(100);
+
+        // Auto download file
+        const a = document.createElement("a");
+        a.href = localUrl;
+        a.download = `converted.${outputFormat}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       } else {
         alert("Konversi gagal.");
         setProgress(0);
@@ -158,11 +158,6 @@ const UploadBox = () => {
           {outputFormat.match(/(mp4|webm)/) && (
             <video controls src={convertedFileUrl} width="300"></video>
           )}
-          <div>
-            <a href={convertedFileUrl} download>
-              <button style={styles.button}>Download File</button>
-            </a>
-          </div>
         </div>
       )}
     </div>
