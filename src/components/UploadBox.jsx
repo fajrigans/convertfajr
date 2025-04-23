@@ -31,6 +31,11 @@ const UploadBox = () => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
+    if (selectedFile.size > 50 * 1024 * 1024) {
+      alert("❌ Ukuran file melebihi batas 50MB.");
+      return;
+    }
+
     setFile(selectedFile);
     setConvertedFileUrl("");
     const url = URL.createObjectURL(selectedFile);
@@ -42,7 +47,10 @@ const UploadBox = () => {
   };
 
   const handleConvert = async () => {
-    if (!file || !outputFormat) return;
+    if (!file || !outputFormat) {
+      alert("Pilih file dan format output terlebih dahulu.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -62,16 +70,13 @@ const UploadBox = () => {
       if (data.url) {
         const fullUrl = `https://convertfajr-backend-production-4294.up.railway.app${data.url}`;
 
-        // Ambil file dari server dan convert ke blob
         const fileResponse = await fetch(fullUrl);
         const blob = await fileResponse.blob();
 
-        // Buat URL lokal untuk preview
         const localUrl = URL.createObjectURL(blob);
         setConvertedFileUrl(localUrl);
         setProgress(100);
 
-        // Auto download file
         const a = document.createElement("a");
         a.href = localUrl;
         a.download = `converted.${outputFormat}`;
@@ -79,12 +84,12 @@ const UploadBox = () => {
         a.click();
         a.remove();
       } else {
-        alert("Konversi gagal.");
+        alert("Konversi gagal. Format tidak sesuai atau file tidak valid.");
         setProgress(0);
       }
     } catch (err) {
       console.error("Error:", err);
-      alert("Terjadi kesalahan saat konversi.");
+      alert("❌ Terjadi kesalahan saat konversi.");
       setProgress(0);
     }
 
@@ -104,7 +109,16 @@ const UploadBox = () => {
           handleFileChange({ target: { files: e.dataTransfer.files } });
         }}
       >
-        {file ? <p>{file.name}</p> : <p>Drag & drop file di sini atau klik</p>}
+        {file ? (
+          <>
+            <p>{file.name}</p>
+            <p style={{ fontSize: "0.8rem", opacity: 0.8 }}>
+              Ukuran: {(file.size / (1024 * 1024)).toFixed(2)} MB
+            </p>
+          </>
+        ) : (
+          <p>Drag & drop file di sini atau klik</p>
+        )}
         <input
           id="fileInput"
           type="file"
