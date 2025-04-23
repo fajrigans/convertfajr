@@ -180,22 +180,23 @@ const UploadBox = () => {
 
 const styles = {
   uploadBox: {
-    background: "#2e2e2e",
-    color: "white",
+    background: "#f2f2f2",
+    color: "#333",
     padding: "2rem",
     borderRadius: "16px",
     maxWidth: "500px",
     margin: "auto",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     fontFamily: "sans-serif",
     textAlign: "center",
   },
   dropZone: {
-    border: "2px dashed #aaa",
+    border: "2px dashed #ccc",
     padding: "2rem",
     cursor: "pointer",
     marginBottom: "1rem",
     borderRadius: "12px",
+    background: "#fff",
   },
   options: {
     marginBottom: "1rem",
@@ -204,26 +205,29 @@ const styles = {
     marginLeft: "10px",
     padding: "0.4rem",
     borderRadius: "6px",
-    border: "1px solid #999",
+    border: "1px solid #ccc",
+    background: "#fff",
+    color: "#333",
   },
   button: {
-    background: "#5c5cff",
+    background: "#4a90e2",
     border: "none",
     padding: "0.5rem 1.5rem",
-    color: "white",
+    color: "#fff",
     borderRadius: "8px",
     cursor: "pointer",
     marginTop: "1rem",
+    fontWeight: "bold",
   },
   progressBar: {
-    background: "#444",
+    background: "#ddd",
     height: "10px",
     borderRadius: "5px",
     overflow: "hidden",
     marginTop: "10px",
   },
   progressInner: {
-    background: "#5c5cff",
+    background: "#4a90e2",
     height: "100%",
     transition: "width 0.3s",
   },
@@ -232,5 +236,6 @@ const styles = {
     textAlign: "center",
   },
 };
+
 
 export default UploadBox;
