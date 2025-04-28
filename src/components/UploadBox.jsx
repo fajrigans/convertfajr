@@ -7,6 +7,7 @@ const UploadBox = () => {
   const [previewUrl, setPreviewUrl] = useState("");
   const [progress, setProgress] = useState(0);
   const [isConverting, setIsConverting] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false); // NEW
 
   const fileTypeMap = {
     image: ["jpg", "png", "webp"],
@@ -20,10 +21,8 @@ const UploadBox = () => {
     if (type.startsWith("image/")) return "image";
     if (type.startsWith("audio/")) return "audio";
     if (type.startsWith("video/")) return "video";
-    if (type.includes("pdf") || type.includes("word") || type.includes("text"))
-      return "document";
-    if (type.includes("zip") || type.includes("rar") || type.includes("tar"))
-      return "archive";
+    if (type.includes("pdf") || type.includes("word") || type.includes("text")) return "document";
+    if (type.includes("zip") || type.includes("rar") || type.includes("tar")) return "archive";
     return null;
   };
 
@@ -96,6 +95,42 @@ const UploadBox = () => {
     setIsConverting(false);
   };
 
+  if (showPrivacy) {
+    return (
+      <div style={styles.uploadBox}>
+        <h2>Privasi & Ketentuan</h2>
+
+        <section style={styles.section}>
+          <h3>Kebijakan Privasi</h3>
+          <p>
+            Kami menghargai privasi Anda. Semua file yang Anda unggah hanya digunakan
+            untuk keperluan konversi dan <strong>tidak disimpan</strong> setelah proses selesai.
+          </p>
+          <p>
+            Kami tidak membagikan data atau file Anda kepada pihak ketiga.
+            Dengan menggunakan layanan ini, Anda setuju bahwa file Anda diproses
+            secara otomatis oleh server kami.
+          </p>
+        </section>
+
+        <section style={styles.section}>
+          <h3>Syarat dan Ketentuan</h3>
+          <ul>
+            <li>Anda bertanggung jawab atas file yang Anda unggah.</li>
+            <li>Dilarang mengunggah konten ilegal, berbahaya, atau melanggar hak cipta.</li>
+            <li>Kami berhak menghentikan layanan kapan saja tanpa pemberitahuan.</li>
+            <li>Kami tidak bertanggung jawab atas kerusakan atau kehilangan data akibat penggunaan layanan ini.</li>
+          </ul>
+          <p>Dengan menggunakan layanan ini, Anda dianggap telah membaca dan menyetujui kebijakan ini.</p>
+        </section>
+
+        <button style={styles.button} onClick={() => setShowPrivacy(false)}>
+          🔙 Kembali
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.uploadBox}>
       <h2>Konversi File Otomatis</h2>
@@ -119,12 +154,7 @@ const UploadBox = () => {
         ) : (
           <p>Drag & drop file di sini atau klik</p>
         )}
-        <input
-          id="fileInput"
-          type="file"
-          hidden
-          onChange={handleFileChange}
-        />
+        <input id="fileInput" type="file" hidden onChange={handleFileChange} />
       </div>
 
       {file && (
@@ -174,6 +204,13 @@ const UploadBox = () => {
           )}
         </div>
       )}
+
+      {/* Link kecil ke Privacy & Terms */}
+      <p style={styles.privacyLink}>
+        <button style={styles.linkButton} onClick={() => setShowPrivacy(true)}>
+          📄 Privasi & Ketentuan
+        </button>
+      </p>
     </div>
   );
 };
@@ -235,7 +272,24 @@ const styles = {
     marginTop: "1rem",
     textAlign: "center",
   },
+  privacyLink: {
+    marginTop: "2rem",
+    fontSize: "0.9rem",
+    opacity: 0.7,
+  },
+  linkButton: {
+    background: "none",
+    border: "none",
+    color: "#4a90e2",
+    cursor: "pointer",
+    textDecoration: "underline",
+    fontSize: "0.9rem",
+    padding: 0,
+  },
+  section: {
+    marginBottom: "2rem",
+    textAlign: "left",
+  },
 };
-
 
 export default UploadBox;
