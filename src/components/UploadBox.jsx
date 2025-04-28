@@ -95,42 +95,6 @@ const UploadBox = () => {
     setIsConverting(false);
   };
 
-  if (showPrivacy) {
-    return (
-      <div style={styles.uploadBox}>
-        <h2>Privasi & Ketentuan</h2>
-
-        <section style={styles.section}>
-          <h3>Kebijakan Privasi</h3>
-          <p>
-            Kami menghargai privasi Anda. Semua file yang Anda unggah hanya digunakan
-            untuk keperluan konversi dan <strong>tidak disimpan</strong> setelah proses selesai.
-          </p>
-          <p>
-            Kami tidak membagikan data atau file Anda kepada pihak ketiga.
-            Dengan menggunakan layanan ini, Anda setuju bahwa file Anda diproses
-            secara otomatis oleh server kami.
-          </p>
-        </section>
-
-        <section style={styles.section}>
-          <h3>Syarat dan Ketentuan</h3>
-          <ul>
-            <li>Anda bertanggung jawab atas file yang Anda unggah.</li>
-            <li>Dilarang mengunggah konten ilegal, berbahaya, atau melanggar hak cipta.</li>
-            <li>Kami berhak menghentikan layanan kapan saja tanpa pemberitahuan.</li>
-            <li>Kami tidak bertanggung jawab atas kerusakan atau kehilangan data akibat penggunaan layanan ini.</li>
-          </ul>
-          <p>Dengan menggunakan layanan ini, Anda dianggap telah membaca dan menyetujui kebijakan ini.</p>
-        </section>
-
-        <button style={styles.button} onClick={() => setShowPrivacy(false)}>
-          🔙 Kembali
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div style={styles.uploadBox}>
       <h2>Konversi File Otomatis</h2>
