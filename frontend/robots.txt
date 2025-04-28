@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gullhazel-mdwf1f.stormkit.dev/sitemap.xml
