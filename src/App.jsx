@@ -134,7 +134,7 @@ const App = () => {
         <header className="w-full bg-white shadow p-4 flex justify-between items-center">
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setPage("home")}>
             <img src={_logoconverfajr} alt="Logo" className="h-8 w-auto" />
-            <span className="font-bold text-xl">FajrConvert</span>
+            <span className="font-bold text-xl"></span>
           </div>
           <nav className="flex space-x-4">
             {["home", "about", "privacy", "terms", "contact", "blog"].map((item) => (

@@ -168,13 +168,6 @@ const UploadBox = () => {
           )}
         </div>
       )}
-
-      {/* Link kecil ke Privacy & Terms */}
-      <p style={styles.privacyLink}>
-        <button style={styles.linkButton} onClick={() => setShowPrivacy(true)}>
-          📄 Privasi & Ketentuan
-        </button>
-      </p>
     </div>
   );
 };
