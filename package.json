@@ -8,10 +8,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^12.9.2",
     "modules": "^0.4.0",
     "node": "^22.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-helmet-async": "^2.0.5",
     "vite": "^6.3.3"
   },
   "devDependencies": {
