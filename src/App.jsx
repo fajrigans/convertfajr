@@ -3,7 +3,13 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { AnimatePresence, motion } from "framer-motion";
 import UploadBox from "./components/UploadBox";
 import _logoconverfajr from "./assets/_logoconverfajr.png";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
+<Routes>
+  <Route path="/" element={<UploadBox />} />
+  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+</Routes>
 
 const fileTypes = {
   jpg: ["png", "webp"],
