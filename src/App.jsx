@@ -11,6 +11,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 </Routes>
 
+
 const fileTypes = {
   jpg: ["png", "webp"],
   png: ["jpg", "webp"],
