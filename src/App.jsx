@@ -114,7 +114,7 @@ const App = () => {
           <header className="w-full bg-white shadow p-4 flex justify-between items-center">
             <Link to="/" className="flex items-center space-x-2">
               <img src={_logoconverfajr} alt="Logo" className="h-8 w-auto" />
-              <span className="font-bold text-xl">FajrConvert</span>
+              <span className="font-bold text-xl"></span>
             </Link>
             <nav className="flex space-x-4">
               {[
