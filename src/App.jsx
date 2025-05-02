@@ -2,9 +2,9 @@ import React from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import UploadBox from "./components/UploadBox";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import _logoconverfajr from "./assets/_logoconverfajr.png";
+import UploadBox from "./components/UploadBox";
 
 // Optional: Daftar format
 const fileTypes = {
@@ -29,6 +29,50 @@ const fileTypes = {
   mov: ["mp4", "webm"],
   avi: ["mp4", "webm"],
   webm: ["mp4", "avi"],
+};
+
+// Halaman Artikel
+const ArticleCard = ({ title, content, date }) => {
+  return (
+    <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6 mb-6">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">{title}</h2>
+      <p className="text-gray-700 text-lg mb-4">{content.slice(0, 300)}...</p>
+      <p className="text-gray-500 text-sm">Published on {date}</p>
+      <button className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-full hover:bg-blue-700">
+        Read More
+      </button>
+    </div>
+  );
+};
+
+// Halaman Artikel
+const Articles = () => {
+  const articles = [
+    {
+      title: "Panduan Lengkap Konversi File untuk Pemula",
+      content: "Konversi file adalah proses mengubah format file ke format lain agar dapat dibuka atau digunakan sesuai kebutuhan...",
+      date: "2025-05-02",
+    },
+    {
+      title: "Cara Mengonversi Gambar Tanpa Kehilangan Kualitas",
+      content: "Mengonversi gambar dengan kualitas terbaik bisa dilakukan dengan menggunakan beberapa tools dan teknik yang tepat...",
+      date: "2025-05-01",
+    },
+    {
+      title: "Mengubah Format Video: Panduan Lengkap untuk Semua Orang",
+      content: "Video adalah salah satu format file yang paling umum digunakan. Namun, terkadang Anda perlu mengubah format video untuk kompatibilitas...",
+      date: "2025-04-30",
+    },
+  ];
+
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-8 text-center">Artikel Terbaru</h1>
+      {articles.map((article, index) => (
+        <ArticleCard key={index} title={article.title} content={article.content} date={article.date} />
+      ))}
+    </div>
+  );
 };
 
 // Halaman Home
@@ -97,6 +141,8 @@ const AnimatedRoutes = () => {
             />
           }
         />
+        {/* Menambahkan route untuk Artikel */}
+        <Route path="/articles" element={<Articles />} />
       </Routes>
     </AnimatePresence>
   );
@@ -117,12 +163,12 @@ const App = () => {
               <span className="font-bold text-xl"></span>
             </Link>
             <nav className="flex space-x-4">
-              {[
-                { name: "Home", path: "/" },
+              {[{ name: "Home", path: "/" },
                 { name: "About", path: "/about" },
                 { name: "Privacy", path: "/privacy-policy" },
                 { name: "Terms", path: "/terms" },
                 { name: "Contact", path: "/contact" },
+                { name: "Articles", path: "/articles" }, // Menambahkan link ke halaman artikel
               ].map((item) => (
                 <Link key={item.path} to={item.path} className="text-blue-600 hover:underline">
                   {item.name}
