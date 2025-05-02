@@ -154,7 +154,7 @@ const App = () => {
       <Router>
         <div className="min-h-screen flex flex-col bg-gray-50">
           <Helmet>
-            <title>FajrConvert - Konversi File</title>
+            <title>FajrConvert - Konversi File Audio,Video dan Dokumen</title>
           </Helmet>
 
           <header className="w-full bg-white shadow p-4 flex justify-between items-center">
