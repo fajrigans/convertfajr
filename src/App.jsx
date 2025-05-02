@@ -4,6 +4,7 @@ import {BrowserRouter as Router,Routes,Route,Link,useLocation,useNavigate,usePar
 import { AnimatePresence, motion } from "framer-motion";
 import UploadBox from "./components/UploadBox";
 import _logoconverfajr from "./assets/_logoconverfajr.png";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 // Format output otomatis
 const fileTypes = {
@@ -477,6 +478,7 @@ const Home = () => (
   </motion.div>
 );
 
+
 // Wrapper Animasi Route
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -486,10 +488,10 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:slug" element={<FullArticle />} />
-        <Route path="/privacy-policy" element={<div className="p-6">Privacy Policy</div>} />
-        <Route path="/about" element={<div className="p-6">About</div>} />
-        <Route path="/terms" element={<div className="p-6">Terms & Conditions</div>} />
-        <Route path="/contact" element={<div className="p-6">Contact</div>} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/about" element={<div className="p-6">Fajr Convert adalah platform online yang memudahkan Anda untuk mengonversi file gambar, video, audio, dan dokumen dengan cepat dan gratis.</div>} />
+        <Route path="/terms" element={<div className="p-6">Dengan menggunakan layanan kami, Anda menyetujui semua ketentuan yang berlaku, termasuk larangan mengunggah konten ilegal.</div>} />
+        <Route path="/contact" element={<div className="p-6">Hubungi Kami Di Email: fajrigokil112@gmail.com</div>} />
       </Routes>
     </AnimatePresence>
   );
