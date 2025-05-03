@@ -364,53 +364,7 @@ const articles = [
     <p class="mb-4">Konversi video untuk platform streaming adalah langkah penting untuk memastikan bahwa video Anda memiliki kualitas terbaik dan dapat diakses oleh audiens di berbagai perangkat. MP4 dengan codec H.264 untuk video dan AAC untuk audio adalah format yang paling disarankan, dan setiap platform memiliki persyaratan spesifik mengenai resolusi dan rasio aspek video. Pastikan untuk memilih format yang tepat, menyesuaikan resolusi dengan kebutuhan, dan mengoptimalkan ukuran file agar upload lebih cepat dan efisien.</p>
   `
 },
-{
-  title: "Panduan Konversi Video untuk Berbagai Platform: Menyesuaikan Format untuk Streaming dan Upload",
-  slug: "panduan-konversi-video-untuk-berbagai-platform-menyesuaikan-format-untuk-streaming-dan-upload",
-  date: "2025-05-02",
-  content: `
-    <h2 class="text-2xl font-semibold mb-4">Mengapa Konversi Video Itu Penting untuk Platform Streaming?</h2>
-    <p class="mb-4">Video adalah bentuk konten yang paling banyak dikonsumsi di internet, terutama melalui platform streaming seperti YouTube, Vimeo, Instagram, dan TikTok. Namun, setiap platform memiliki persyaratan teknis yang berbeda, seperti format file, resolusi, dan ukuran file video yang optimal. Oleh karena itu, penting untuk memahami cara mengonversi video agar sesuai dengan platform yang diinginkan, memastikan kualitas terbaik dan waktu upload yang efisien.</p>
-
-    <h2 class="text-2xl font-semibold mb-4">Format Video Terbaik untuk Berbagai Platform</h2>
-    <p class="mb-4">Setiap platform memiliki standar dan preferensi format video yang berbeda. Berikut adalah panduan format video terbaik untuk platform streaming dan sosial media populer:</p>
-
-    <ul class="list-disc pl-5 mb-4">
-      <li><strong>YouTube</strong>: YouTube menerima berbagai format video, tetapi format terbaik adalah <strong>MP4</strong> dengan codec <strong>H.264</strong> untuk video dan <strong>AAC</strong> untuk audio. YouTube merekomendasikan resolusi 1080p (Full HD) atau 4K untuk kualitas terbaik.</li>
-      <li><strong>Vimeo</strong>: Seperti YouTube, Vimeo juga lebih suka format <strong>MP4</strong> dengan codec <strong>H.264</strong> dan <strong>AAC</strong> untuk audio. Namun, Vimeo mendukung hingga resolusi 8K, yang memberikan lebih banyak fleksibilitas dalam kualitas video.</li>
-      <li><strong>Instagram</strong>: Instagram mengutamakan format video <strong>MP4</strong> dengan resolusi 1080px x 1080px untuk feed dan 1080px x 1920px untuk stories dan IGTV. Pastikan rasio aspek video adalah 1:1 untuk feed dan 9:16 untuk stories.</li>
-      <li><strong>Facebook</strong>: Facebook mendukung berbagai format video, tetapi <strong>MP4</strong> dengan codec H.264 adalah format yang disarankan. Facebook juga lebih suka resolusi 1280px x 720px dengan ukuran file video yang lebih kecil untuk mempercepat proses upload.</li>
-      <li><strong>TikTok</strong>: TikTok lebih suka video dengan rasio aspek <strong>9:16</strong> dan resolusi 1080px x 1920px. Format terbaik adalah <strong>MP4</strong>, dengan codec H.264 untuk video dan AAC untuk audio, karena platform ini mendukung video vertikal.</li>
-    </ul>
-
-    <h2 class="text-2xl font-semibold mb-4">Langkah-Langkah Konversi Video untuk Platform Tertentu</h2>
-    <p class="mb-4">Berikut adalah langkah-langkah mudah untuk mengonversi video ke format yang tepat untuk platform tertentu:</p>
-
-    <ol class="list-decimal pl-5 mb-4">
-      <li>Pilih format yang diinginkan berdasarkan platform yang ingin digunakan, seperti <strong>MP4</strong> untuk YouTube, Vimeo, atau Facebook.</li>
-      <li>Pastikan menggunakan codec <strong>H.264</strong> untuk video dan <strong>AAC</strong> untuk audio, karena keduanya adalah standar untuk sebagian besar platform.</li>
-      <li>Tentukan resolusi yang sesuai dengan platform yang dituju (misalnya 1080p untuk YouTube dan Instagram feed, 4K untuk Vimeo, atau 1080px x 1920px untuk TikTok).</li>
-      <li>Gunakan perangkat lunak atau alat konversi seperti FajrConvert untuk mengonversi file video ke format yang diinginkan, dengan mempertimbangkan ukuran file agar lebih cepat diupload.</li>
-      <li>Setelah video selesai dikonversi, cek kualitasnya dan pastikan file video memiliki rasio aspek yang benar dan ukuran file yang sesuai dengan ketentuan platform.</li>
-    </ol>
-
-    <h2 class="text-2xl font-semibold mb-4">Tips Mengoptimalkan Video untuk Upload yang Lebih Cepat dan Kualitas Terbaik</h2>
-    <p class="mb-4">Selain memilih format yang tepat, ada beberapa tips tambahan untuk memastikan video Anda dioptimalkan dengan baik sebelum diunggah ke platform:</p>
-
-    <ul class="list-disc pl-5 mb-4">
-      <li><strong>Kompresi Video</strong>: Video dengan ukuran file yang lebih kecil akan mempermudah proses upload dan menghemat ruang penyimpanan. Gunakan kompresi untuk mengurangi ukuran video tanpa mengorbankan kualitas terlalu banyak.</li>
-      <li><strong>Gunakan Resolusi yang Sesuai</strong>: Meskipun platform seperti YouTube mendukung video 4K, ukuran file menjadi sangat besar. Jika tidak diperlukan, pilih resolusi 1080p untuk kualitas yang lebih baik tanpa memperbesar ukuran file secara signifikan.</li>
-      <li><strong>Pastikan Audio Berkualitas</strong>: Audio yang jelas sangat penting untuk video berkualitas tinggi. Gunakan codec AAC untuk audio dan pastikan volume suara optimal tanpa terlalu keras atau terlalu lemah.</li>
-      <li><strong>Periksa Rasio Aspek Video</strong>: Setiap platform memiliki rasio aspek idealnya, seperti 16:9 untuk YouTube dan Vimeo, serta 9:16 untuk TikTok dan Instagram Stories. Pastikan video Anda sesuai dengan rasio aspek yang benar agar tampilan video lebih profesional.</li>
-      <li><strong>Gunakan Subtitle atau Teks</strong>: Menambahkan subtitle atau teks dapat meningkatkan aksesibilitas video Anda, memudahkan penonton dari berbagai latar belakang bahasa, dan meningkatkan tingkat interaksi dengan audiens.</li>
-    </ul>
-
-    <h2 class="text-2xl font-semibold mb-4">Kesimpulan: Pilih Format yang Tepat untuk Platform Video</h2>
-    <p class="mb-4">Konversi video untuk platform streaming adalah langkah penting untuk memastikan bahwa video Anda memiliki kualitas terbaik dan dapat diakses oleh audiens di berbagai perangkat. MP4 dengan codec H.264 untuk video dan AAC untuk audio adalah format yang paling disarankan, dan setiap platform memiliki persyaratan spesifik mengenai resolusi dan rasio aspek video. Pastikan untuk memilih format yang tepat, menyesuaikan resolusi dengan kebutuhan, dan mengoptimalkan ukuran file agar upload lebih cepat dan efisien.</p>
-  `
-}
-
-              
+           
 ];
 
 // Komponen Artikel Kartu
