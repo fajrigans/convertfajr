@@ -480,11 +480,11 @@ const App = () => {
               ))}
             </nav>
           </header>
-          <script type='text/javascript' src='https://edge-cdn.trakteer.id/js/trbtn-overlay.min.js?v=14-05-2025'></script><script type='text/javascript' class='troverlay'>(function() {var trbtnId = trbtnOverlay.init('Dukung Saya di Trakteer','#be1e2d','https://trakteer.id/ahmadrizkyalfajri/tip/embed/modal','https://edge-cdn.trakteer.id/images/embed/trbtn-icon.png?v=14-05-2025','40','inline');trbtnOverlay.draw(trbtnId);})();</script>
+          
           <main className="flex-grow flex items-center justify-center p-6">
             <AnimatedRoutes />
           </main>
-
+          <script type='text/javascript' src='https://edge-cdn.trakteer.id/js/trbtn-overlay.min.js?v=14-05-2025'></script><script type='text/javascript' class='troverlay'>(function() {var trbtnId = trbtnOverlay.init('Dukung Saya di Trakteer','#be1e2d','https://trakteer.id/ahmadrizkyalfajri/tip/embed/modal','https://edge-cdn.trakteer.id/images/embed/trbtn-icon.png?v=14-05-2025','40','inline');trbtnOverlay.draw(trbtnId);})();</script>
           <footer className="text-center py-4 text-gray-500 text-sm border-t">
             © 2025 FajrConvert - Layanan Konversi File Gratis
           </footer>
