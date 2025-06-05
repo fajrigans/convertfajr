@@ -6,45 +6,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FajrConvert - Konversi File Audio, Video, Gambar</title>
 
-<meta name="description" content="FajrConvert adalah alat online untuk mengonversi file audio, video, dan gambar secara gratis dan mudah.">
-<meta name="keywords" content="convert file, audio to mp3, video to mp4, image to jpg, fajrconvert, konversi online,fajarconvert">
-<meta name="author" content="Fajri Gans">
+    <meta name="description" content="FajrConvert adalah alat online untuk mengonversi file audio, video, dan gambar secara gratis dan mudah.">
+    <meta name="keywords" content="convert file, audio to mp3, video to mp4, image to jpg, fajrconvert, konversi online,fajarconvert">
+    <meta name="author" content="Fajri Gans">
 
-<!-- Open Graph -->
-<meta property="og:title" content="FajrConvert - Konversi File Online Audio, Video, Gambar" />
-<meta property="og:description" content="Konversi audio, video, gambar dengan mudah dan gratis." />
-<meta property="og:image" content="https://fajrconvert.vercel.app/_logoconverfajr.png" />
-<meta property="og:url" content="https://fajrconvert.vercel.app" />
-<meta property="og:type" content="website" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="FajrConvert - Konversi File Online Audio, Video, Gambar" />
+    <meta property="og:description" content="Konversi audio, video, gambar dengan mudah dan gratis." />
+    <meta property="og:image" content="https://fajrconvert.vercel.app/_logoconverfajr.png" />
+    <meta property="og:url" content="https://fajrconvert.vercel.app" />
+    <meta property="og:type" content="website" />
 
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="FajrConvert - Konversi File Online Audio, Video, Gambar" />
-<meta name="twitter:description" content="Konversi audio, video, gambar online gratis." />
-<meta name="twitter:image" content="https://fajrconvert.vercel.app/_logoconverfajr.png" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="FajrConvert - Konversi File Online Audio, Video, Gambar" />
+    <meta name="twitter:description" content="Konversi audio, video, gambar online gratis." />
+    <meta name="twitter:image" content="https://fajrconvert.vercel.app/_logoconverfajr.png" />
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2416145413528363"
-     crossorigin="anonymous"></script>
+    <!-- Tailwind CSS CDN (if not already included in your build process) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      /* Ensure the body takes full height for proper flex layout */
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      /* Basic styles for the modal if used by child components like UploadBox */
+      .modal {
+          position: fixed;
+          z-index: 1000;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+      .modal.hidden {
+          display: none;
+      }
+      .modal-content {
+          background-color: #fefefe;
+          margin: auto;
+          padding: 2.5rem;
+          border-radius: 0.5rem;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          width: 90%;
+          max-width: 500px;
+          position: relative;
+          text-align: center;
+      }
+      .message-modal-content {
+          background-color: #fefefe;
+          margin: auto;
+          padding: 2.5rem;
+          border-radius: 0.5rem;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          width: 90%;
+          max-width: 400px; /* Slightly smaller for message modals */
+          position: relative;
+          text-align: center;
+      }
+      .modal-close-button {
+          position: absolute;
+          top: 1rem;
+          right: 1.5rem;
+          color: #aaa;
+          font-size: 1.8rem;
+          font-weight: bold;
+          cursor: pointer;
+      }
+      .modal-close-button:hover,
+      .modal-close-button:focus {
+          color: #333;
+          text-decoration: none;
+          cursor: pointer;
+      }
+      .btn-primary {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0.75rem 1.5rem;
+          border: 1px solid transparent;
+          font-size: 0.875rem;
+          font-weight: 500;
+          border-radius: 0.375rem;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          color: #ffffff;
+          background-color: #4f46e5;
+          transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+          transition-duration: 150ms;
+          cursor: pointer;
+      }
+      .btn-primary:hover {
+          background-color: #4338ca;
+      }
+      .btn-primary:focus {
+          outline: 2px solid transparent;
+          outline-offset: 2px;
+          box-shadow: ring-2 ring-offset-2 ring-indigo-500;
+      }
+    </style>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2416145413528363" crossorigin="anonymous"></script>
     <meta name="google-site-verification" content="P3YGHZCaE9-ETe_ESuUs491p6Ytg0krlNd_wGW3KECo" />
     <meta name="monetag" content="1891ee5bc73320107a5c5ee787a7baf0">
     <script src="https://ligheechoagool.com/88/tag.min.js" data-zone="145242" async data-cfasync="false"></script>
     <meta name="733a2d6bf27a6386147a5f1d44a5688141a2a335" content="733a2d6bf27a6386147a5f1d44a5688141a2a335" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2416145413528363"
-     crossorigin="anonymous"></script>    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2416145413528363" crossorigin="anonymous"></script>    
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CCPS955DMM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CCPS955DMM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CCPS955DMM');
+    </script>
+  </head>
+  <body class="bg-gray-100 flex justify-center items-stretch min-h-screen">
+    <!-- Left Ad Sidebar -->
+    <aside class="hidden lg:flex w-[120px] flex-shrink-0 mr-8 items-center justify-center overflow-hidden">
+      <div class="sticky top-4">
+        <!-- Ad Code for Left Sidebar -->
+        <ins style="width: 120px; height: 600px; display: block;" data-width="120" data-height="600" class="kd61ac79696" data-domain="//data963.click" data-affquery="/7f5b626c906376c2d2f4/d61ac79696/?placementName=farjconvert">
+          <script src="//data963.click/js/responsive.js" async></script>
+        </ins>
+      </div>
+    </aside>
 
-  gtag('config', 'G-CCPS955DMM');
-</script>
-    </head>
-  <body>
-    <div id="root"></div>
+    <!-- Main React App Root -->
+    <div id="root" class="flex-grow flex flex-col items-center"></div>
+
+    <!-- Right Ad Sidebar -->
+    <aside class="hidden lg:flex w-[120px] flex-shrink-0 ml-8 items-center justify-center overflow-hidden">
+      <div class="sticky top-4">
+        <!-- Ad Code for Right Sidebar -->
+        <ins style="width: 120px; height: 600px; display: block;" data-width="120" data-height="600" class="kd61ac79696" data-domain="//data963.click" data-affquery="/7f5b626c906376c2d2f4/d61ac79696/?placementName=farjconvert">
+          <script src="//data963.click/js/responsive.js" async></script>
+        </ins>
+      </div>
+    </aside>
+
     <script type="module" src="/src/main.jsx"></script>
     <script type="text/javascript"> var infolinks_pid = 3435786; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>
-    
   </body>
 </html>
